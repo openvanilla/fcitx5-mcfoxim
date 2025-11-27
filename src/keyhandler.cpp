@@ -70,7 +70,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
 
     if (auto inputState = dynamic_cast<const InputState::InputtingState*>(&state)) {
         // Tab or Return to commit
-        if (key.check(fcitx::Key(fcitx::Key::Tab)) || key.check(fcitx::Key(fcitx::Key::Return))) {
+        if (key.check(fcitx::Key(FcitxKey_Tab)) || key.check(fcitx::Key(FcitxKey_Return))) {
             if (!inputState->candidates().empty()) {
                 size_t index = inputState->selectedCandidateIndex().value_or(0);
                 if (index < inputState->candidates().size()) {
@@ -101,7 +101,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             return true;
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Space))) {
+        if (key.check(fcitx::Key(FcitxKey_space))) {
             if (inputState->cursorIndex() == 0) {
                 stateCallback(std::make_unique<InputState::CommittingState>(" "));
                 
@@ -132,11 +132,11 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             return true;
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Escape))) {
+        if (key.check(fcitx::Key(FcitxKey_Escape))) {
             return true;
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::BackSpace))) {
+        if (key.check(fcitx::Key(FcitxKey_BackSpace))) {
             if (inputState->cursorIndex() > 0) {
                 std::string newComposingBuffer = inputState->composingBuffer();
                 newComposingBuffer.erase(inputState->cursorIndex() - 1, 1);
@@ -170,7 +170,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Delete))) {
+        if (key.check(fcitx::Key(FcitxKey_Delete))) {
             if (inputState->cursorIndex() < inputState->composingBuffer().length()) {
                 std::string newComposingBuffer = inputState->composingBuffer();
                 newComposingBuffer.erase(inputState->cursorIndex(), 1);
@@ -204,7 +204,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Left))) {
+        if (key.check(fcitx::Key(FcitxKey_Left))) {
             if (inputState->cursorIndex() > 0) {
                 InputState::InputtingState::Args args;
                 args.cursorIndex = inputState->cursorIndex() - 1;
@@ -219,7 +219,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Right))) {
+        if (key.check(fcitx::Key(FcitxKey_Right))) {
             if (inputState->cursorIndex() < inputState->composingBuffer().length()) {
                 InputState::InputtingState::Args args;
                 args.cursorIndex = inputState->cursorIndex() + 1;
@@ -234,7 +234,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Up))) {
+        if (key.check(fcitx::Key(FcitxKey_Up))) {
             if (!inputState->candidates().empty()) {
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
                 size_t count = inputState->candidates().size();
@@ -253,7 +253,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Down))) {
+        if (key.check(fcitx::Key(FcitxKey_Down))) {
             if (!inputState->candidates().empty()) {
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
                 size_t count = inputState->candidates().size();
@@ -272,7 +272,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Page_Down))) {
+        if (key.check(fcitx::Key(FcitxKey_Page_Down))) {
             if (!inputState->candidates().empty()) {
                 size_t candidatesPerPage = InputState::InputtingState::CANDIDATES_PER_PAGE;
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
@@ -293,7 +293,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Page_Up))) {
+        if (key.check(fcitx::Key(FcitxKey_Page_Up))) {
             if (!inputState->candidates().empty()) {
                 size_t candidatesPerPage = InputState::InputtingState::CANDIDATES_PER_PAGE;
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
@@ -317,7 +317,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             }
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::Home))) {
+        if (key.check(fcitx::Key(FcitxKey_Home))) {
             if (inputState->cursorIndex() == 0) {
                 errorCallback();
                 return true;
@@ -331,7 +331,7 @@ bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::Input
             return true;
         }
 
-        if (key.check(fcitx::Key(fcitx::Key::End))) {
+        if (key.check(fcitx::Key(FcitxKey_End))) {
             if (inputState->cursorIndex() == inputState->composingBuffer().length()) {
                 errorCallback();
                 return true;

@@ -10,13 +10,17 @@
 #include "inputstate.h"
 #include "config.h"
 
+namespace fcitx {
+    class Instance;
+}
+
 namespace McFoxIM {
 
 class FoxEngine : public fcitx::InputMethodEngineV2 {
 public:
     FoxEngine(fcitx::Instance *instance);
     void keyEvent(const fcitx::InputMethodEntry &entry, fcitx::KeyEvent &keyEvent) override;
-    void reset(const fcitx::InputMethodEntry &entry, fcitx::InputContext &context) override;
+    void reset(const fcitx::InputMethodEntry &entry, fcitx::InputContext &context);
     void selectCandidate(int index, fcitx::InputContext *context);
     void reloadConfig() override;
 

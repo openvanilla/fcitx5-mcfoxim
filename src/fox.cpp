@@ -3,6 +3,7 @@
 #include <fcitx/instance.h>
 #include <fcitx/event.h>
 #include <fcitx/inputcontext.h>
+#include <fcitx/inputpanel.h>
 #include <fcitx/candidatelist.h>
 #include <fcitx/addonmanager.h>
 #include <fcitx/text.h>
@@ -15,8 +16,7 @@ public:
         : fcitx::CandidateWord(fcitx::Text(text)), engine_(engine), index_(index) {}
 
     void select(fcitx::InputContext *context) const override {
-        FCITX_UNUSED(context);
-        engine_->selectCandidate(index_);
+        engine_->selectCandidate(index_, context);
     }
 
 private:
@@ -24,7 +24,7 @@ private:
     int index_;
 };
 
-FoxEngine::FoxEngine(fcitx::Instance *instance) : fcitx::InputMethodEngineV2(instance) {
+FoxEngine::FoxEngine(fcitx::Instance *instance) : fcitx::InputMethodEngineV2() {
     // Initialize components
     // Assuming data is in standard fcitx5 data dir "fox/data"
     std::string dataPath = fcitx::StandardPath::global().locate(fcitx::StandardPath::Type::PkgData, "fox/data");
@@ -46,7 +46,7 @@ FoxEngine::FoxEngine(fcitx::Instance *instance) : fcitx::InputMethodEngineV2(ins
 }
 
 void FoxEngine::reloadConfig() {
-    fcitx::Configuration::load(config_, "conf/fox.conf");
+    fcitx::readAsIni(config_, "conf/fox.conf");
     if (tableManager_) {
         const char* names[] = {
             "TW_00", "TW_01", "TW_02", "TW_03", "TW_04", "TW_05", "TW_06", "TW_07", "TW_08", "TW_09", "TW_10",
@@ -157,7 +157,6 @@ void FoxEngine::updateUI(const InputState::InputtingState &newState, fcitx::Inpu
         
         candidateList->setPage(newState.candidatePageIndex().value_or(0));
         candidateList->setPageSize(InputState::InputtingState::CANDIDATES_PER_PAGE);
-        candidateList->setTotal(newState.candidates().size());
         
         inputPanel.setCandidateList(std::move(candidateList));
     }
