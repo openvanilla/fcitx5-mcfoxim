@@ -1,0 +1,30 @@
+# CMake
+build/
+cmake-build-*/
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# IDE
+.vscode/
+.idea/
+*.user
+*.swp
+*~
+
+# System
+.DS_Store
+.cache/
+
+# Output
+*.so
+*.dylib
+*.a
