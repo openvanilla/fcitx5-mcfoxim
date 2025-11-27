@@ -30,7 +30,7 @@ def main():
     """
     Converts Excel files in the current directory to TypeScript files.
     """
-    for i in range(1, 44):
+    for i in range(0, 43):
         current_folder = os.getcwd()
         current_folder = os.path.join(current_folder, "glossary")
         print(current_folder)

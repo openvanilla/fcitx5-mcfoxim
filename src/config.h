@@ -7,7 +7,7 @@
 namespace McFoxIM {
 
 enum class TableOption {
-    TW_01, TW_02, TW_03, TW_04, TW_05, TW_06, TW_07, TW_08, TW_09, TW_10,
+    TW_00, TW_01, TW_02, TW_03, TW_04, TW_05, TW_06, TW_07, TW_08, TW_09, TW_10,
     TW_12, TW_13, TW_14, TW_15, TW_16, TW_17, TW_18, TW_19, TW_20,
     TW_21, TW_22, TW_23, TW_24, TW_25, TW_26, TW_27, TW_28, TW_29, TW_30,
     TW_31, TW_32, TW_33, TW_34, TW_35, TW_36, TW_37, TW_38, TW_39, TW_40,
@@ -15,6 +15,7 @@ enum class TableOption {
 };
 
 FCITX_CONFIG_ENUM(TableOption,
+    TW_00, "南勢阿美語",
     TW_01, "秀姑巒阿美語",
     TW_02, "海岸阿美語",
     TW_03, "馬蘭阿美語",
@@ -59,7 +60,7 @@ FCITX_CONFIG_ENUM(TableOption,
 );
 
 FCITX_CONFIG_STRUCT(FoxConfig,
-    fcitx::Option<TableOption> table{this, "Table", "The input table to use", TableOption::TW_01};
+    fcitx::Option<TableOption> table{this, "Table", "The input table to use", TableOption::TW_00};
 );
 
 } // namespace McFoxIM
