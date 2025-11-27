@@ -4,9 +4,9 @@ project(fcitx5-fox)
 find_package(ECM REQUIRED 1.0.0)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings NO_POLICY_SCOPE)
+include(GNUInstallDirs)
+include(ECMSetupVersion)
+include(ECMUninstallTarget)
 include(FeatureSummary)
 
 find_package(Fcitx5Core REQUIRED)
