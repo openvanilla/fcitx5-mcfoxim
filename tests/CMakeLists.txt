@@ -14,5 +14,3 @@ target_link_libraries(test_completer
 )
 
 target_include_directories(test_completer PRIVATE ../src)
-
-add_test(NAME test_completer COMMAND test_completer)

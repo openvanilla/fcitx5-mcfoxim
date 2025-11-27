@@ -13,13 +13,14 @@ namespace McFoxIM {
 class InputTableManager {
  public:
   struct TableInfo {
+    std::string id;
     std::string name;
     std::string path;
   };
 
   InputTableManager(std::string dataPath);
 
-  bool setTable(const std::string& name);
+  bool setTable(int index);
   const InputTable& currentTable() const;
   const std::vector<TableInfo>& availableTables() const;
 

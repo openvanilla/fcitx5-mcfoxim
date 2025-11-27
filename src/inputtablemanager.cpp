@@ -6,6 +6,9 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include <iomanip>
+#include <sstream>
+
 namespace McFoxIM {
 
 InputTableManager::InputTableManager(std::string dataPath)
@@ -25,60 +28,52 @@ void InputTableManager::scanTables() {
   }
   FCITX_INFO() << "Scanning tables in: " << dataPath_;
 
-  for (const auto& entry : std::filesystem::directory_iterator(dataPath_)) {
-    if (entry.path().extension() == ".json") {
-      FCITX_INFO() << "Found JSON file: " << entry.path();
-      // Peek into the file to get the name?
-      // Or just use filename as ID and load name on demand?
-      // The requirement says "provide selectable input table list".
-      // Let's try to read the "name" field from JSON without loading everything
-      // if possible, or just load it. Since these are likely small config
-      // files, reading them might be okay. But for performance, maybe just
-      // trust the filename or do a quick parse.
+  for (int i = 0; i <= 43; ++i) {
+    std::stringstream ss;
+    ss << "TW_" << std::setw(2) << std::setfill('0') << i << ".json";
+    std::string filename = ss.str();
+    std::filesystem::path filePath = std::filesystem::path(dataPath_) / filename;
 
-      std::ifstream f(entry.path());
+    if (std::filesystem::exists(filePath)) {
+      FCITX_INFO() << "Found JSON file: " << filePath;
+      TableInfo info;
+      info.id = filePath.stem().string();
+      info.path = filePath.string();
+      
+      std::ifstream f(filePath);
       if (f.is_open()) {
         try {
-          nlohmann::json j;
-          f >> j;
-          std::string name = j.value("name", "");
-          if (!name.empty()) {
-            availableTables_.push_back({name, entry.path().string()});
-            FCITX_INFO() << "Found table: " << name;
-          }
+            nlohmann::json j;
+            f >> j;
+            info.name = j.value("name", info.id);
         } catch (...) {
-          FCITX_INFO() << "Failed to parse JSON: " << entry.path();
-          // Ignore malformed files
+            info.name = info.id;
         }
+      } else {
+          info.name = info.id;
       }
+      
+      availableTables_.push_back(info);
     }
   }
-
-  // Sort by name or path?
-  std::sort(
-      availableTables_.begin(), availableTables_.end(),
-      [](const TableInfo& a, const TableInfo& b) { return a.name < b.name; });
 }
 
-bool InputTableManager::setTable(const std::string& name) {
-  auto it = std::find_if(
-      availableTables_.begin(), availableTables_.end(),
-      [&name](const TableInfo& info) { return info.name == name; });
-  FCITX_INFO() << "Setting table to: " << name;
+bool InputTableManager::setTable(int index) {
+  if (index >= 0 && index < static_cast<int>(availableTables_.size())) {
+    const auto& info = availableTables_[index];
+    FCITX_INFO() << "Setting table to index: " << index << ", id: " << info.id;
 
-  if (it != availableTables_.end()) {
     auto newTable = std::make_unique<InputTable>();
-    FCITX_INFO() << "Attempting to load table from path: " << it->path;
-    FCITX_INFO() << "Table name: " << it->name;
-    if (newTable->load(it->path)) {
+    FCITX_INFO() << "Attempting to load table from path: " << info.path;
+    if (newTable->load(info.path)) {
       currentTable_ = std::move(newTable);
-      FCITX_INFO() << "Successfully loaded table: " << name;
+      FCITX_INFO() << "Successfully loaded table: " << info.name;
       return true;
     } else {
-      FCITX_INFO() << "Failed to load table: " << name << " from " << it->path;
+      FCITX_INFO() << "Failed to load table: " << info.name << " from " << info.path;
     }
   } else {
-    FCITX_INFO() << "Table not found in available list: " << name;
+    FCITX_INFO() << "Invalid table index: " << index;
   }
   return false;
 }
