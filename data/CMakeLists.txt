@@ -1,2 +1,2 @@
-# Example: install(FILES fox.png DESTINATION "${FCITX_INSTALL_PKGDATADIR}/fox")
-# install(FILES table.txt DESTINATION "${FCITX_INSTALL_PKGDATADIR}/fox/data")
+file(GLOB JSON_FILES "*.json")
+install(FILES ${JSON_FILES} DESTINATION "${FCITX_INSTALL_PKGDATADIR}/fox/data")

@@ -1,13 +1,13 @@
 #ifndef KEYHANDLER_H_
 #define KEYHANDLER_H_
 
+#include <fcitx/event.h>
 #include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 #include "completer.h"
 #include "inputstate.h"
-#include "key.h"
 
 namespace McFoxIM {
 
@@ -18,7 +18,7 @@ public:
     using StateCallback = std::function<void(std::unique_ptr<InputState::InputState>)>;
     using ErrorCallback = std::function<void()>;
 
-    bool handle(const Key &key, const InputState::InputState &state,
+    bool handle(const fcitx::KeyEvent &keyEvent, const InputState::InputState &state,
                 StateCallback stateCallback, ErrorCallback errorCallback);
 
 private:

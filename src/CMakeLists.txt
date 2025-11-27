@@ -11,6 +11,8 @@ add_library(fox MODULE
     inputstate.h
     keyhandler.cpp
     keyhandler.h
+    inputtablemanager.cpp
+    inputtablemanager.h
 )
 
 target_link_libraries(fox Fcitx5::Core Fcitx5::Module nlohmann_json::nlohmann_json)

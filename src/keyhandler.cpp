@@ -1,5 +1,6 @@
 #include "keyhandler.h"
 #include <iostream>
+#include <fcitx/inputmethodentry.h>
 
 namespace McFoxIM {
 
@@ -7,18 +8,28 @@ KeyHandler::KeyHandler(Completer &completer) : completer_(completer) {
     inputKeys_ = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'^";
 }
 
-bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
+bool KeyHandler::handle(const fcitx::KeyEvent &keyEvent, const InputState::InputState &state,
                         StateCallback stateCallback, ErrorCallback errorCallback) {
     
+    if (keyEvent.isRelease()) {
+        return false;
+    }
+
+    auto key = keyEvent.key();
+    std::string ascii;
+    if (key.isSimple()) {
+        ascii = key.toString();
+    }
+
     // Check if state is EmptyState
     if (dynamic_cast<const InputState::EmptyState*>(&state)) {
-        if (key.ascii.length() == 1 && inputKeys_.find(key.ascii) == std::string::npos) {
+        if (ascii.length() == 1 && inputKeys_.find(ascii) == std::string::npos) {
             return false;
         }
     }
 
-    if (key.ascii.length() == 1 && inputKeys_.find(key.ascii) != std::string::npos) {
-        std::string chr = key.ascii;
+    if (ascii.length() == 1 && inputKeys_.find(ascii) != std::string::npos) {
+        std::string chr = ascii;
         if (chr == "'") {
             chr = "’";
         }
@@ -59,7 +70,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
 
     if (auto inputState = dynamic_cast<const InputState::InputtingState*>(&state)) {
         // Tab or Return to commit
-        if (key.name == KeyName::TAB || key.name == KeyName::RETURN) {
+        if (key.check(fcitx::Key(fcitx::Key::Tab)) || key.check(fcitx::Key(fcitx::Key::Return))) {
             if (!inputState->candidates().empty()) {
                 size_t index = inputState->selectedCandidateIndex().value_or(0);
                 if (index < inputState->candidates().size()) {
@@ -73,12 +84,12 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
         }
 
         // Number keys selection
-        if (key.ascii.length() == 1 && key.ascii >= "1" && key.ascii <= "9") {
+        if (ascii.length() == 1 && ascii >= "1" && ascii <= "9") {
             const auto &candidates = inputState->candidatesInCurrentPage();
             if (candidates.empty()) {
                 errorCallback();
             } else {
-                int index = std::stoi(key.ascii) - 1;
+                int index = std::stoi(ascii) - 1;
                 if (index >= 0 && index < static_cast<int>(candidates.size())) {
                     const auto &selectedCandidate = candidates[index];
                     stateCallback(std::make_unique<InputState::CommittingState>(selectedCandidate.displayText()));
@@ -90,18 +101,10 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             return true;
         }
 
-        if (key.name == KeyName::SPACE) {
+        if (key.check(fcitx::Key(fcitx::Key::Space))) {
             if (inputState->cursorIndex() == 0) {
-                // Commit space then current state?
-                // TS: stateCallback(new CommittingState(' ')); stateCallback(current);
-                // We can't easily callback twice with unique_ptr ownership transfer if the callback expects to take ownership.
-                // But here we are creating new states.
-                // However, 'current' is 'state'. We need to clone 'state' or pass a copy.
-                // Since InputtingState is copyable (default copy ctor), we can do this.
-                
                 stateCallback(std::make_unique<InputState::CommittingState>(" "));
                 
-                // We need to reconstruct the current state.
                 InputState::InputtingState::Args args;
                 args.cursorIndex = inputState->cursorIndex();
                 args.composingBuffer = inputState->composingBuffer();
@@ -129,24 +132,13 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             return true;
         }
 
-        if (key.name == KeyName::ESC) {
+        if (key.check(fcitx::Key(fcitx::Key::Escape))) {
             return true;
         }
 
-        if (key.name == KeyName::BACKSPACE) {
+        if (key.check(fcitx::Key(fcitx::Key::BackSpace))) {
             if (inputState->cursorIndex() > 0) {
                 std::string newComposingBuffer = inputState->composingBuffer();
-                // Handle UTF-8 characters? The TS code uses slice which works on characters (mostly).
-                // C++ std::string is bytes. We should probably use a library for UTF-8 or assume ASCII for simple implementation as per TS code structure.
-                // But wait, TS string.slice works on UTF-16 code units.
-                // For now, let's assume simple byte manipulation or that the user will handle UTF-8 later.
-                // But wait, the TS code handles "’" which is multi-byte in UTF-8.
-                // Using simple erase on std::string might break UTF-8.
-                // However, to stick to the conversion task, I will use simple string manipulation but be aware.
-                // Ideally we should use fcitx-utils/utf8.h but I don't want to add deps if not asked.
-                // I'll stick to std::string::erase for now, assuming 1 char = 1 byte for the logic provided (except the quote replacement).
-                // Actually, let's just use erase(index, 1).
-                
                 newComposingBuffer.erase(inputState->cursorIndex() - 1, 1);
                 size_t newCursorIndex = inputState->cursorIndex() - 1;
                 
@@ -178,7 +170,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::DELETE) {
+        if (key.check(fcitx::Key(fcitx::Key::Delete))) {
             if (inputState->cursorIndex() < inputState->composingBuffer().length()) {
                 std::string newComposingBuffer = inputState->composingBuffer();
                 newComposingBuffer.erase(inputState->cursorIndex(), 1);
@@ -212,7 +204,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::LEFT) {
+        if (key.check(fcitx::Key(fcitx::Key::Left))) {
             if (inputState->cursorIndex() > 0) {
                 InputState::InputtingState::Args args;
                 args.cursorIndex = inputState->cursorIndex() - 1;
@@ -227,7 +219,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::RIGHT) {
+        if (key.check(fcitx::Key(fcitx::Key::Right))) {
             if (inputState->cursorIndex() < inputState->composingBuffer().length()) {
                 InputState::InputtingState::Args args;
                 args.cursorIndex = inputState->cursorIndex() + 1;
@@ -242,11 +234,10 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::UP) {
+        if (key.check(fcitx::Key(fcitx::Key::Up))) {
             if (!inputState->candidates().empty()) {
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
                 size_t count = inputState->candidates().size();
-                // (current - 1 + count) % count
                 size_t newIndex = (current + count - 1) % count;
                 
                 InputState::InputtingState::Args args;
@@ -262,7 +253,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::DOWN) {
+        if (key.check(fcitx::Key(fcitx::Key::Down))) {
             if (!inputState->candidates().empty()) {
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
                 size_t count = inputState->candidates().size();
@@ -281,7 +272,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::PAGE_DOWN) {
+        if (key.check(fcitx::Key(fcitx::Key::Page_Down))) {
             if (!inputState->candidates().empty()) {
                 size_t candidatesPerPage = InputState::InputtingState::CANDIDATES_PER_PAGE;
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
@@ -302,13 +293,11 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::PAGE_UP) {
+        if (key.check(fcitx::Key(fcitx::Key::Page_Up))) {
             if (!inputState->candidates().empty()) {
                 size_t candidatesPerPage = InputState::InputtingState::CANDIDATES_PER_PAGE;
                 size_t current = inputState->selectedCandidateIndex().value_or(0);
                 
-                // Math.max(Math.floor(current / perPage - 1) * perPage, 0)
-                // In C++, size_t is unsigned, so be careful with subtraction.
                 size_t currentPage = current / candidatesPerPage;
                 size_t newIndex = 0;
                 if (currentPage > 0) {
@@ -328,7 +317,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             }
         }
 
-        if (key.name == KeyName::HOME) {
+        if (key.check(fcitx::Key(fcitx::Key::Home))) {
             if (inputState->cursorIndex() == 0) {
                 errorCallback();
                 return true;
@@ -342,7 +331,7 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
             return true;
         }
 
-        if (key.name == KeyName::END) {
+        if (key.check(fcitx::Key(fcitx::Key::End))) {
             if (inputState->cursorIndex() == inputState->composingBuffer().length()) {
                 errorCallback();
                 return true;
@@ -357,9 +346,9 @@ bool KeyHandler::handle(const Key &key, const InputState::InputState &state,
         }
 
         // Printable characters
-        if (key.ascii.length() == 1) {
+        if (ascii.length() == 1) {
             std::string commitString = inputState->composingBuffer();
-            commitString.insert(inputState->cursorIndex(), key.ascii);
+            commitString.insert(inputState->cursorIndex(), ascii);
             stateCallback(std::make_unique<InputState::CommittingState>(commitString));
             return true;
         }
