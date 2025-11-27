@@ -39,6 +39,25 @@ FoxEngine::FoxEngine(fcitx::Instance *instance) : fcitx::InputMethodEngineV2(ins
     
     keyHandler_ = std::make_unique<KeyHandler>(*completer_);
     state_ = std::make_unique<InputState::EmptyState>();
+    
+    reloadConfig();
+}
+
+void FoxEngine::reloadConfig() {
+    fcitx::Configuration::load(config_, "conf/fox.conf");
+    if (tableManager_) {
+        // Convert enum to string manually or use a helper
+        // Since we hardcoded the enum, we can reconstruct the string or use a switch
+        // Or better, use the names we know.
+        const char* names[] = {
+            "TW_01", "TW_02", "TW_03", "TW_04", "TW_05",
+            "TW_06", "TW_07", "TW_08", "TW_09", "TW_10"
+        };
+        int index = static_cast<int>(config_.table.value());
+        if (index >= 0 && index < 10) {
+            tableManager_->setTable(names[index]);
+        }
+    }
 }
 
 void FoxEngine::reset(const fcitx::InputMethodEntry &entry, fcitx::InputMethodContext &context) {

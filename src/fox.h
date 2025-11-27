@@ -8,6 +8,7 @@
 #include "completer.h"
 #include "keyhandler.h"
 #include "inputstate.h"
+#include "config.h"
 
 namespace McFoxIM {
 
@@ -17,6 +18,7 @@ public:
     void keyEvent(const fcitx::InputMethodEntry &entry, fcitx::KeyEvent &keyEvent) override;
     void reset(const fcitx::InputMethodEntry &entry, fcitx::InputMethodContext &context) override;
     void selectCandidate(int index, fcitx::InputMethodContext *context);
+    void reloadConfig() override;
 
 private:
     void enterState(std::unique_ptr<InputState::InputState> newState, fcitx::InputMethodContext *context);
@@ -29,6 +31,7 @@ private:
     std::unique_ptr<Completer> completer_;
     std::unique_ptr<KeyHandler> keyHandler_;
     std::unique_ptr<InputState::InputState> state_;
+    FoxConfig config_;
 };
 
 class FoxAddonFactory : public fcitx::AddonFactory {

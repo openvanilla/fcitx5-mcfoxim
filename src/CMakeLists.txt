@@ -3,6 +3,7 @@ add_library(fox MODULE
     fox.h
     inputtable.cpp
     inputtable.h
+    config.h
     candidate.cpp
     candidate.h
     completer.cpp
