@@ -10,7 +10,6 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
 find_package(Fcitx5Core REQUIRED)
-find_package(Fcitx5Module REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(json
