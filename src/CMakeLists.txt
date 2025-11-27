@@ -16,7 +16,7 @@ add_library(fox MODULE
     inputtablemanager.h
 )
 
-target_link_libraries(fox Fcitx5::Core Fcitx5::Utils nlohmann_json::nlohmann_json)
+target_link_libraries(fox Fcitx5::Core Fcitx5::Config Fcitx5::Utils nlohmann_json::nlohmann_json)
 
 install(TARGETS fox DESTINATION "${FCITX_INSTALL_LIBDIR}/fcitx5")
 install(FILES fox.conf DESTINATION "${FCITX_INSTALL_PKGDATADIR}/addon")

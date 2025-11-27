@@ -10,6 +10,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
 find_package(Fcitx5Core REQUIRED)
+find_package(Fcitx5Config REQUIRED)
 find_package(Fcitx5Utils REQUIRED)
 
 # Setup some compiler option that is generally useful and compatible with Fcitx 5 (C++17)
