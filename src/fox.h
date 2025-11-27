@@ -16,16 +16,16 @@ class FoxEngine : public fcitx::InputMethodEngineV2 {
 public:
     FoxEngine(fcitx::Instance *instance);
     void keyEvent(const fcitx::InputMethodEntry &entry, fcitx::KeyEvent &keyEvent) override;
-    void reset(const fcitx::InputMethodEntry &entry, fcitx::InputMethodContext &context) override;
-    void selectCandidate(int index, fcitx::InputMethodContext *context);
+    void reset(const fcitx::InputMethodEntry &entry, fcitx::InputContext &context) override;
+    void selectCandidate(int index, fcitx::InputContext *context);
     void reloadConfig() override;
 
 private:
-    void enterState(std::unique_ptr<InputState::InputState> newState, fcitx::InputMethodContext *context);
-    void handleEmptyState(fcitx::InputMethodContext *context);
-    void handleCommittingState(const InputState::CommittingState &newState, fcitx::InputMethodContext *context);
-    void handleInputtingState(const InputState::InputtingState &newState, fcitx::InputMethodContext *context);
-    void updateUI(const InputState::InputtingState &newState, fcitx::InputMethodContext *context);
+    void enterState(std::unique_ptr<InputState::InputState> newState, fcitx::InputContext *context);
+    void handleEmptyState(fcitx::InputContext *context);
+    void handleCommittingState(const InputState::CommittingState &newState, fcitx::InputContext *context);
+    void handleInputtingState(const InputState::InputtingState &newState, fcitx::InputContext *context);
+    void updateUI(const InputState::InputtingState &newState, fcitx::InputContext *context);
 
     std::unique_ptr<InputTableManager> tableManager_;
     std::unique_ptr<Completer> completer_;

@@ -1,8 +1,10 @@
 #include "fox.h"
+#include <fcitx-utils/standardpath.h>
 #include <fcitx/instance.h>
 #include <fcitx/event.h>
-#include <fcitx/inputmethodcontext.h>
-#include <fcitx/candidate.h>
+#include <fcitx/inputcontext.h>
+#include <fcitx/candidatelist.h>
+#include <fcitx/addonmanager.h>
 #include <fcitx/text.h>
 
 namespace McFoxIM {
@@ -12,7 +14,7 @@ public:
     FoxCandidate(FoxEngine *engine, std::string text, int index)
         : fcitx::CandidateWord(fcitx::Text(text)), engine_(engine), index_(index) {}
 
-    void select(fcitx::InputMethodContext *context) const override {
+    void select(fcitx::InputContext *context) const override {
         FCITX_UNUSED(context);
         engine_->selectCandidate(index_);
     }
@@ -60,7 +62,7 @@ void FoxEngine::reloadConfig() {
     }
 }
 
-void FoxEngine::reset(const fcitx::InputMethodEntry &entry, fcitx::InputMethodContext &context) {
+void FoxEngine::reset(const fcitx::InputMethodEntry &entry, fcitx::InputContext &context) {
     FCITX_UNUSED(entry);
     if (auto inputState = dynamic_cast<InputState::InputtingState*>(state_.get())) {
         if (!inputState->composingBuffer().empty()) {
@@ -92,7 +94,7 @@ void FoxEngine::keyEvent(const fcitx::InputMethodEntry &entry, fcitx::KeyEvent &
     }
 }
 
-void FoxEngine::selectCandidate(int index, fcitx::InputMethodContext *context) {
+void FoxEngine::selectCandidate(int index, fcitx::InputContext *context) {
     if (auto inputState = dynamic_cast<InputState::InputtingState*>(state_.get())) {
         const auto &candidates = inputState->candidatesInCurrentPage();
         if (index >= 0 && index < static_cast<int>(candidates.size())) {
@@ -102,7 +104,7 @@ void FoxEngine::selectCandidate(int index, fcitx::InputMethodContext *context) {
     }
 }
 
-void FoxEngine::enterState(std::unique_ptr<InputState::InputState> newState, fcitx::InputMethodContext *context) {
+void FoxEngine::enterState(std::unique_ptr<InputState::InputState> newState, fcitx::InputContext *context) {
     if (dynamic_cast<InputState::EmptyState*>(newState.get())) {
         handleEmptyState(context);
         state_ = std::move(newState);
@@ -116,28 +118,28 @@ void FoxEngine::enterState(std::unique_ptr<InputState::InputState> newState, fci
     }
 }
 
-void FoxEngine::handleEmptyState(fcitx::InputMethodContext *context) {
+void FoxEngine::handleEmptyState(fcitx::InputContext *context) {
     context->inputPanel().reset();
     context->updateUserInterface(fcitx::UserInterfaceComponent::InputPanel);
     context->updatePreedit();
 }
 
-void FoxEngine::handleCommittingState(const InputState::CommittingState &newState, fcitx::InputMethodContext *context) {
+void FoxEngine::handleCommittingState(const InputState::CommittingState &newState, fcitx::InputContext *context) {
     context->commitString(newState.commitString());
     context->inputPanel().reset();
     context->updateUserInterface(fcitx::UserInterfaceComponent::InputPanel);
     context->updatePreedit();
 }
 
-void FoxEngine::handleInputtingState(const InputState::InputtingState &newState, fcitx::InputMethodContext *context) {
+void FoxEngine::handleInputtingState(const InputState::InputtingState &newState, fcitx::InputContext *context) {
     updateUI(newState, context);
 }
 
-void FoxEngine::updateUI(const InputState::InputtingState &newState, fcitx::InputMethodContext *context) {
+void FoxEngine::updateUI(const InputState::InputtingState &newState, fcitx::InputContext *context) {
     // Update Preedit
     fcitx::Text preedit(newState.composingBuffer());
     if (newState.cursorIndex() <= newState.composingBuffer().length()) {
-         // Fcitx5 handles cursor in preedit via setCursor? No, usually via TextFormat or InputMethodContext::updatePreedit
+         // Fcitx5 handles cursor in preedit via setCursor? No, usually via TextFormat or InputContext::updatePreedit
     }
     context->inputPanel().setClientPreedit(preedit);
     
