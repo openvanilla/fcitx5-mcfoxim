@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(fcitx5-fox)
 
+find_package(Fcitx5Core REQUIRED)
+find_package(Fcitx5Config REQUIRED)
+find_package(Fcitx5Utils REQUIRED)
 find_package(ECM REQUIRED 1.0.0)
+
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(GNUInstallDirs)
@@ -9,9 +13,6 @@ include(ECMSetupVersion)
 include(ECMUninstallTarget)
 include(FeatureSummary)
 
-find_package(Fcitx5Core REQUIRED)
-find_package(Fcitx5Config REQUIRED)
-find_package(Fcitx5Utils REQUIRED)
 
 # Setup some compiler option that is generally useful and compatible with Fcitx 5 (C++17)
 include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")

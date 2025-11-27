@@ -1,19 +1,11 @@
-add_library(fox MODULE
+add_library(fox SHARED
     fox.cpp
-    fox.h
     inputtable.cpp
-    inputtable.h
-    config.h
     candidate.cpp
-    candidate.h
     completer.cpp
-    completer.h
     inputstate.cpp
-    inputstate.h
     keyhandler.cpp
-    keyhandler.h
     inputtablemanager.cpp
-    inputtablemanager.h
 )
 
 set_target_properties(fox PROPERTIES PREFIX "")

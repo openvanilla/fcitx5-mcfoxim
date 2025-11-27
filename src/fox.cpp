@@ -29,10 +29,12 @@ class FoxCandidate : public fcitx::CandidateWord {
 };
 
 FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
-  // Assuming data is in standard fcitx5 data dir "fox/data"
+  std::string path = "data";
   std::string dataPath = fcitx::StandardPath::global().locate(
-      fcitx::StandardPath::Type::PkgData, "data");
-  FCITX_INFO() << "FoxEngine data path: " << dataPath;
+      fcitx::StandardPath::Type::PkgData, path);
+  FCITX_INFO() << "FoxEngine data path 1: " << path;
+  FCITX_INFO() << "FoxEngine data path 2: " << dataPath;
+  dataPath = "/usr/share/fcitx5/fox/data/";
   if (dataPath.empty()) {
 #ifdef FOX_DATA_SOURCE_DIR
     dataPath = FOX_DATA_SOURCE_DIR;
@@ -185,7 +187,7 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
 
   if (!newState.candidatesInCurrentPage().empty()) {
     auto candidateList = std::make_unique<fcitx::CommonCandidateList>();
-    candidateList->setLayout(fcitx::CandidateLayout::Vertical);
+    candidateList->setLayoutHint(fcitx::CandidateLayoutHint::Vertical);
     const auto& candidates = newState.candidatesInCurrentPage();
     for (size_t i = 0; i < candidates.size(); ++i) {
       // Use FoxCandidate for selection support
