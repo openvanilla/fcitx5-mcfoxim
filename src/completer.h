@@ -2,31 +2,32 @@
 #define COMPLETER_H_
 
 #include <functional>
-#include <vector>
 #include <string>
-#include "inputtable.h"
+#include <vector>
+
 #include "candidate.h"
+#include "inputtable.h"
 
 namespace McFoxIM {
 
 class Completer {
-public:
-    using TableProvider = std::function<const InputTable&()>;
+ public:
+  using TableProvider = std::function<const InputTable&()>;
 
-    Completer(TableProvider provider);
+  Completer(TableProvider provider);
 
-    /**
-     * Completes the given prefix string.
-     *
-     * @param prefix The prefix to complete.
-     * @returns A list of candidates.
-     */
-    std::vector<Candidate> complete(const std::string &prefix);
+  /**
+   * Completes the given prefix string.
+   *
+   * @param prefix The prefix to complete.
+   * @returns A list of candidates.
+   */
+  std::vector<Candidate> complete(const std::string& prefix);
 
-private:
-    TableProvider provider_;
+ private:
+  TableProvider provider_;
 };
 
-} // namespace McFoxIM
+}  // namespace McFoxIM
 
-#endif // COMPLETER_H_
+#endif  // COMPLETER_H_

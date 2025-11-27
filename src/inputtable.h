@@ -7,22 +7,22 @@
 namespace McFoxIM {
 
 class InputTable {
-public:
-    struct Entry {
-        std::string key;
-        std::string value;
-    };
+ public:
+  struct Entry {
+    std::string key;
+    std::string value;
+  };
 
-    bool load(const std::string &path);
-    std::vector<std::string> getCandidates(const std::string &key) const;
-    const std::string &name() const { return name_; }
-    const std::vector<Entry> &entries() const { return entries_; }
+  bool load(const std::string& path);
+  std::vector<std::string> getCandidates(const std::string& key) const;
+  const std::string& name() const { return name_; }
+  const std::vector<Entry>& entries() const { return entries_; }
 
-private:
-    std::string name_;
-    std::vector<Entry> entries_;
+ private:
+  std::string name_;
+  std::vector<Entry> entries_;
 };
 
-} // namespace McFoxIM
+}  // namespace McFoxIM
 
-#endif // INPUTTABLE_H_
+#endif  // INPUTTABLE_H_
