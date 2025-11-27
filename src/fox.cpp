@@ -46,15 +46,15 @@ FoxEngine::FoxEngine(fcitx::Instance *instance) : fcitx::InputMethodEngineV2(ins
 void FoxEngine::reloadConfig() {
     fcitx::Configuration::load(config_, "conf/fox.conf");
     if (tableManager_) {
-        // Convert enum to string manually or use a helper
-        // Since we hardcoded the enum, we can reconstruct the string or use a switch
-        // Or better, use the names we know.
         const char* names[] = {
-            "TW_01", "TW_02", "TW_03", "TW_04", "TW_05",
-            "TW_06", "TW_07", "TW_08", "TW_09", "TW_10"
+            "TW_01", "TW_02", "TW_03", "TW_04", "TW_05", "TW_06", "TW_07", "TW_08", "TW_09", "TW_10",
+            "TW_12", "TW_13", "TW_14", "TW_15", "TW_16", "TW_17", "TW_18", "TW_19", "TW_20",
+            "TW_21", "TW_22", "TW_23", "TW_24", "TW_25", "TW_26", "TW_27", "TW_28", "TW_29", "TW_30",
+            "TW_31", "TW_32", "TW_33", "TW_34", "TW_35", "TW_36", "TW_37", "TW_38", "TW_39", "TW_40",
+            "TW_41", "TW_42"
         };
         int index = static_cast<int>(config_.table.value());
-        if (index >= 0 && index < 10) {
+        if (index >= 0 && index < 41) { // 41 items total (0-40)
             tableManager_->setTable(names[index]);
         }
     }
