@@ -112,6 +112,14 @@ void FoxEngine::keyEvent(const fcitx::InputMethodEntry& entry,
 
   if (handled) {
     keyEvent.accept();
+  } else {
+    if (auto inputState =
+            dynamic_cast<InputState::InputtingState*>(state_.get())) {
+      if (!inputState->composingBuffer().empty()) {
+        context->commitString(inputState->composingBuffer());
+        enterState(std::make_unique<InputState::EmptyState>(), context);
+      }
+    }
   }
 }
 
@@ -174,18 +182,15 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     FCITX_INFO() << "  - " << candidate.displayText();
   }
 
-  // Update Preedit
-  // Update Preedit
+  auto& inputPanel = context->inputPanel();
+  inputPanel.reset();
+
   fcitx::Text preedit(newState.composingBuffer(),
                       fcitx::TextFormatFlag::Underline);
   if (newState.cursorIndex() <= newState.composingBuffer().length()) {
     preedit.setCursor(newState.cursorIndex());
   }
-  context->inputPanel().setClientPreedit(preedit);
-
-  // Update Candidate List
-  auto& inputPanel = context->inputPanel();
-  inputPanel.reset();
+  inputPanel.setClientPreedit(preedit);
 
   if (!newState.candidatesInCurrentPage().empty()) {
     auto candidateList = std::make_unique<fcitx::CommonCandidateList>();
@@ -198,8 +203,7 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     }
 
     candidateList->setPage(newState.candidatePageIndex().value_or(0));
-    candidateList->setPageSize(InputState::InputtingState::CANDIDATES_PER_PAGE);
-
+    candidateList->setPageSize(candidates.size());
     inputPanel.setCandidateList(std::move(candidateList));
   }
 
