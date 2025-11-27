@@ -40,9 +40,9 @@ bool InputTable::load(const std::string& path) {
   return true;
 }
 
-std::vector<std::string> InputTable::getCandidates(
+std::vector<InputTable::Entry> InputTable::getCandidates(
     const std::string& key) const {
-  std::vector<std::string> results;
+  std::vector<InputTable::Entry> results;
 
   // Binary search for the first element that is not less than key
   auto it = std::lower_bound(
@@ -51,7 +51,7 @@ std::vector<std::string> InputTable::getCandidates(
 
   // Iterate while keys match
   while (it != entries_.end() && it->key == key) {
-    results.push_back(it->value);
+    results.push_back(*it);
     ++it;
   }
 
