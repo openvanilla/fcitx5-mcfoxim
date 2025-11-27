@@ -31,7 +31,7 @@ class FoxCandidate : public fcitx::CandidateWord {
 FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
   // Assuming data is in standard fcitx5 data dir "fox/data"
   std::string dataPath = fcitx::StandardPath::global().locate(
-      fcitx::StandardPath::Type::PkgData, "fox/data");
+      fcitx::StandardPath::Type::PkgData, "data");
   FCITX_INFO() << "FoxEngine data path: " << dataPath;
   if (dataPath.empty()) {
 #ifdef FOX_DATA_SOURCE_DIR
@@ -172,10 +172,10 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
   }
 
   // Update Preedit
-  fcitx::Text preedit(newState.composingBuffer());
+  // Update Preedit
+  fcitx::Text preedit(newState.composingBuffer(), fcitx::TextFormatFlag::Underline);
   if (newState.cursorIndex() <= newState.composingBuffer().length()) {
-    // Fcitx5 handles cursor in preedit via setCursor? No, usually via
-    // TextFormat or InputContext::updatePreedit
+      preedit.setCursor(newState.cursorIndex());
   }
   context->inputPanel().setClientPreedit(preedit);
 
@@ -185,6 +185,7 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
 
   if (!newState.candidatesInCurrentPage().empty()) {
     auto candidateList = std::make_unique<fcitx::CommonCandidateList>();
+    candidateList->setLayout(fcitx::CandidateLayout::Vertical);
     const auto& candidates = newState.candidatesInCurrentPage();
     for (size_t i = 0; i < candidates.size(); ++i) {
       // Use FoxCandidate for selection support
