@@ -174,14 +174,6 @@ void FoxEngine::handleInputtingState(const InputState::InputtingState& newState,
 
 void FoxEngine::updateUI(const InputState::InputtingState& newState,
                          fcitx::InputContext* context) {
-  FCITX_INFO() << "updateUI";
-  FCITX_INFO() << "InputtingState: " << newState.composingBuffer();
-  FCITX_INFO() << "InputtingState: " << newState.cursorIndex();
-  FCITX_INFO() << "Candidates:";
-  for (const auto& candidate : newState.candidates()) {
-    FCITX_INFO() << "  - " << candidate.displayText();
-  }
-
   auto& inputPanel = context->inputPanel();
   inputPanel.reset();
 
@@ -191,19 +183,22 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     preedit.setCursor(newState.cursorIndex());
   }
   inputPanel.setClientPreedit(preedit);
-
-  if (!newState.candidatesInCurrentPage().empty()) {
+  const auto& candidates = newState.candidatesInCurrentPage();
+  if (!candidates.empty()) {
     auto candidateList = std::make_unique<fcitx::CommonCandidateList>();
     candidateList->setLayoutHint(fcitx::CandidateLayoutHint::Vertical);
-    const auto& candidates = newState.candidatesInCurrentPage();
+    auto keys = fcitx::Key::keyListFromString("1 2 3 4 5 6 7 8 9");
+    candidateList->setSelectionKey(keys);
+
     for (size_t i = 0; i < candidates.size(); ++i) {
-      // Use FoxCandidate for selection support
+      std::string joined = candidates[i].displayText() + " " +
+                           candidates[i].description();
       candidateList->append(
-          std::make_unique<FoxCandidate>(this, candidates[i].displayText(), i));
+          std::make_unique<FoxCandidate>(this, joined, i));
     }
 
-    candidateList->setPage(newState.candidatePageIndex().value_or(0));
     candidateList->setPageSize(candidates.size());
+    candidateList->setCursorIndex(newState.selectedCandidateIndex().value_or(0));
     inputPanel.setCandidateList(std::move(candidateList));
   }
 

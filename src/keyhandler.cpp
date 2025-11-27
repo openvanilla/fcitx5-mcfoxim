@@ -288,8 +288,8 @@ bool KeyHandler::handle(const fcitx::KeyEvent& keyEvent,
         size_t current = inputState->selectedCandidateIndex().value_or(0);
         size_t count = inputState->candidates().size();
 
-        size_t newIndex = std::min(
-            ((current / candidatesPerPage) + 1) * candidatesPerPage, count - 1);
+        size_t newIndex = ((current / candidatesPerPage) + 1) * candidatesPerPage;
+        newIndex = std::min(newIndex, count - 1);
 
         InputState::InputtingState::Args args;
         args.cursorIndex = inputState->cursorIndex();
