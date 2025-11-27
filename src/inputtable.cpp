@@ -47,10 +47,10 @@ std::vector<InputTable::Entry> InputTable::getCandidates(
   // Binary search for the first element that is not less than key
   auto it = std::lower_bound(
       entries_.begin(), entries_.end(), key,
-      [](const Entry& e, const std::string& k) { return e.key < k; });
+      [](const Entry& e, const std::string& k) { return e.phrase < k; });
 
   // Iterate while keys match
-  while (it != entries_.end() && it->key == key) {
+  while (it != entries_.end() && it->phrase == key) {
     results.push_back(*it);
     ++it;
   }

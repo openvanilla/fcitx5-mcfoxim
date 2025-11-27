@@ -9,12 +9,12 @@ namespace McFoxIM {
 class InputTable {
  public:
   struct Entry {
-    std::string key;
-    std::string value;
+    std::string phrase;
+    std::string description;
   };
 
   bool load(const std::string& path);
-  std::vector<std::string> getCandidates(const std::string& key) const;
+  std::vector<Entry> getCandidates(const std::string& key) const;
   const std::string& name() const { return name_; }
   const std::vector<Entry>& entries() const { return entries_; }
 
