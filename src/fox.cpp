@@ -174,6 +174,8 @@ void FoxEngine::handleInputtingState(const InputState::InputtingState& newState,
 
 void FoxEngine::updateUI(const InputState::InputtingState& newState,
                          fcitx::InputContext* context) {
+  FCITX_INFO() << "updateUI called with composing buffer: " << newState.composingBuffer();
+
   auto& inputPanel = context->inputPanel();
   inputPanel.reset();
 
@@ -184,6 +186,13 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
   }
   inputPanel.setClientPreedit(preedit);
   const auto& candidates = newState.candidatesInCurrentPage();
+
+  FCITX_INFO() << "Candidates:";
+  for (const auto& candidate : candidates) {
+    FCITX_INFO() << "  - Display: " << candidate.displayText()
+                 << ", Description: " << candidate.description();
+  }
+
   if (!candidates.empty()) {
     auto candidateList = std::make_unique<fcitx::CommonCandidateList>();
     candidateList->setLayoutHint(fcitx::CandidateLayoutHint::Vertical);
@@ -198,7 +207,10 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     }
 
     candidateList->setPageSize(candidates.size());
-    candidateList->setCursorIndex(newState.selectedCandidateIndex().value_or(0));
+    int index = newState.selectedCandidateIndexInCurrentPage().value_or(0);
+    if (index >= 0 && index < static_cast<int>(candidates.size())) {
+      candidateList->setCursorIndex(index);
+    }
     inputPanel.setCandidateList(std::move(candidateList));
   }
 
