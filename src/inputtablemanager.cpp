@@ -35,7 +35,7 @@ void InputTableManager::scanTables() {
     std::filesystem::path filePath = std::filesystem::path(dataPath_) / filename;
 
     if (std::filesystem::exists(filePath)) {
-      FCITX_INFO() << "Found JSON file: " << filePath;
+      // FCITX_INFO() << "Found JSON file: " << filePath;
       TableInfo info;
       info.id = filePath.stem().string();
       info.path = filePath.string();

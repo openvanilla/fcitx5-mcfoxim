@@ -1,7 +1,29 @@
+// Copyright (c) 2025 and onwards The McFoxxIM Authors.
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
 #include "fox.h"
 
 #include <fcitx-utils/log.h>
-#include <fcitx-utils/standardpath.h>
 #include <fcitx/addonmanager.h>
 #include <fcitx/candidatelist.h>
 #include <fcitx/event.h>
@@ -28,20 +50,27 @@ class FoxCandidate : public fcitx::CandidateWord {
   int index_;
 };
 
-FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
-  std::string path = "data";
-  std::string dataPath = fcitx::StandardPath::global().locate(
-      fcitx::StandardPath::Type::PkgData, path);
-  FCITX_INFO() << "FoxEngine data path 1: " << path;
-  FCITX_INFO() << "FoxEngine data path 2: " << dataPath;
-  dataPath = "/usr/share/fcitx5/fox/data/";
-  if (dataPath.empty()) {
-#ifdef FOX_DATA_SOURCE_DIR
-    dataPath = FOX_DATA_SOURCE_DIR;
-    FCITX_INFO() << "Falling back to source data path: " << dataPath;
-#endif
-  }
+std::string findFoxDataPath() {
+  std::string foundPath = "";
+  std::string targetSubPath = "fox/data";
 
+  fcitx::StandardPath::global().scanDirectories(
+      fcitx::StandardPath::Type::PkgData,
+      [&](const std::string& basePath, bool user) -> bool {
+        std::filesystem::path p =
+            std::filesystem::path(basePath) / targetSubPath;
+        if (std::filesystem::exists(p) && std::filesystem::is_directory(p)) {
+          foundPath = p.string();
+          return false;
+        }
+        return true;
+      });
+
+  return foundPath;
+}
+
+FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
+  std::string dataPath = findFoxDataPath();
   if (dataPath.empty()) {
     FCITX_ERROR() << "FoxEngine data path is empty. Cannot initialize input "
                      "table manager.";
@@ -174,8 +203,6 @@ void FoxEngine::handleInputtingState(const InputState::InputtingState& newState,
 
 void FoxEngine::updateUI(const InputState::InputtingState& newState,
                          fcitx::InputContext* context) {
-  FCITX_INFO() << "updateUI called with composing buffer: " << newState.composingBuffer();
-
   auto& inputPanel = context->inputPanel();
   inputPanel.reset();
 
@@ -187,12 +214,6 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
   inputPanel.setClientPreedit(preedit);
   const auto& candidates = newState.candidatesInCurrentPage();
 
-  FCITX_INFO() << "Candidates:";
-  for (const auto& candidate : candidates) {
-    FCITX_INFO() << "  - Display: " << candidate.displayText()
-                 << ", Description: " << candidate.description();
-  }
-
   if (!candidates.empty()) {
     auto candidateList = std::make_unique<fcitx::CommonCandidateList>();
     candidateList->setLayoutHint(fcitx::CandidateLayoutHint::Vertical);
@@ -200,10 +221,9 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     candidateList->setSelectionKey(keys);
 
     for (size_t i = 0; i < candidates.size(); ++i) {
-      std::string joined = candidates[i].displayText() + " " +
-                           candidates[i].description();
-      candidateList->append(
-          std::make_unique<FoxCandidate>(this, joined, i));
+      std::string joined =
+          candidates[i].displayText() + " " + candidates[i].description();
+      candidateList->append(std::make_unique<FoxCandidate>(this, joined, i));
     }
 
     candidateList->setPageSize(candidates.size());

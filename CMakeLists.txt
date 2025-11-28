@@ -26,4 +26,7 @@ FetchContent_MakeAvailable(json)
 add_subdirectory(src)
 add_subdirectory(data)
 
+enable_testing()
+add_subdirectory(tests)
+
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

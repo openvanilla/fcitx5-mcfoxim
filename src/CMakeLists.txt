@@ -1,3 +1,16 @@
+cmake_minimum_required(VERSION 3.10)
+project(mcfoxim VERSION 0.1.0)
+
+find_package(PkgConfig REQUIRED)
+find_package(Fcitx5Core REQUIRED)
+find_package(Fcitx5Utils REQUIRED)
+# MESSAGE(STATUS "Found Fcitx5Utils (found version \"${Fcitx5Utils_VERSION}\")")
+# if (Fcitx5Utils_VERSION VERSION_LESS "5.1.13")
+#     MESSAGE(STATUS "Use legacy FCITX5 API <standardpath.h>")
+#     add_compile_definitions(USE_LEGACY_FCITX5_API_STANDARDPATH=1)
+# endif()
+
+
 add_library(fox SHARED
     fox.cpp
     inputtable.cpp
@@ -7,6 +20,7 @@ add_library(fox SHARED
     keyhandler.cpp
     inputtablemanager.cpp
 )
+
 
 set_target_properties(fox PROPERTIES PREFIX "")
 
