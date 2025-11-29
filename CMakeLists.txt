@@ -26,7 +26,6 @@ FetchContent_MakeAvailable(json)
 
 add_subdirectory(src)
 add_subdirectory(data)
-add_subdirectory(po)
 
 enable_testing()
 add_subdirectory(tests)
