@@ -58,7 +58,7 @@ std::string findFoxDataPath() {
 
   fcitx::StandardPath::global().scanDirectories(
       fcitx::StandardPath::Type::PkgData,
-      [&](const std::string& basePath, bool user) -> bool {
+      [&](const std::string& basePath, bool /*Unused*/) -> bool {
         std::filesystem::path p =
             std::filesystem::path(basePath) / targetSubPath;
         if (std::filesystem::exists(p) && std::filesystem::is_directory(p)) {
@@ -71,7 +71,8 @@ std::string findFoxDataPath() {
   return foundPath;
 }
 
-FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
+FoxEngine::FoxEngine(fcitx::Instance* /* Unused */)
+    : fcitx::InputMethodEngineV2() {
   std::string dataPath = findFoxDataPath();
   if (dataPath.empty()) {
     FCITX_ERROR() << "FoxEngine data path is empty. Cannot initialize input "
@@ -94,7 +95,7 @@ FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
 }
 
 void FoxEngine::activate(const fcitx::InputMethodEntry& entry,
-                         fcitx::InputContextEvent& event) {
+                         fcitx::InputContextEvent& /* Unused */) {
   std::string tableName = entry.uniqueName();
   if (tableName.rfind("fox_", 0) == 0) {
     tableName = tableName.substr(4);
