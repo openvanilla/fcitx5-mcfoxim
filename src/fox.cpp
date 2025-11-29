@@ -75,8 +75,15 @@ std::string findFoxDataPath() {
 #else
 std::string findFoxDataPath() {
   std::string targetSubPath = "fox/data";
-  return fcitx::StandardPaths::global().locateDir(
-      fcitx::StandardPaths::Type::PkgData, targetSubPath);
+  auto dirs = fcitx::StandardPaths::global().directories(
+      fcitx::StandardPathsType::PkgData);
+  for (const auto& dir : dirs) {
+    auto p = dir / targetSubPath;
+    if (std::filesystem::exists(p) && std::filesystem::is_directory(p)) {
+      return p.string();
+    }
+  }
+  return "";
 }
 #endif
 
