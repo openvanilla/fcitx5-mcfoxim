@@ -50,6 +50,8 @@ class FoxCandidate : public fcitx::CandidateWord {
   int index_;
 };
 
+// Note: The locate() method provided by fcitx::StandardPath::global() only
+// supports files but not directories. So we use scanDirectories() instead.
 std::string findFoxDataPath() {
   std::string foundPath = "";
   std::string targetSubPath = "fox/data";
@@ -93,12 +95,15 @@ FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
 
 const fcitx::Configuration* FoxEngine::getConfig() const {
   return &config_;
-  fcitx::safeSaveAsIni(config_, "conf/fox.conf");
 }
 
 void FoxEngine::setConfig(const fcitx::RawConfig& config) {
   config_.load(config, true);
-  reloadConfig();
+  fcitx::safeSaveAsIni(config_, "conf/fox.conf");
+  if (tableManager_) {
+    int index = static_cast<int>(config_.table.value());
+    tableManager_->setTable(index);
+  }
 }
 
 void FoxEngine::reloadConfig() {
