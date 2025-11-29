@@ -63,13 +63,18 @@ void testKeyHandler() {
     assert(inputState->cursorIndex() == 1);
   }
 
-  // Test 2: EmptyState + 'z' (not in table) -> nullptr (false returned by handle, but here we check callback not called)
-  // Actually handle returns bool. Let's check return value too.
+  // Test 2: EmptyState + 'z' (not in table) -> InputtingState (handled, even if no candidates)
   {
     InputState::EmptyState state;
     fcitx::KeyEvent event(nullptr, fcitx::Key("z"), false);
-    bool handled = handler.handle(event, state, [](auto){}, [](){});
-    assert(!handled);
+    std::unique_ptr<InputState::InputState> resultState = nullptr;
+    bool handled = handler.handle(event, state, [&](auto s){ resultState = std::move(s); }, [](){});
+    assert(handled);
+    assert(resultState != nullptr);
+    auto inputState = dynamic_cast<InputState::InputtingState*>(resultState.get());
+    assert(inputState != nullptr);
+    assert(inputState->composingBuffer() == "z");
+    assert(inputState->candidates().empty());
   }
 
   // Test 3: InputtingState("a") + 'b' -> InputtingState("ab")
