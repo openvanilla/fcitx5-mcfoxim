@@ -3,10 +3,9 @@
 #include <fcitx-utils/log.h>
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <nlohmann/json.hpp>
-
-#include <iomanip>
 #include <sstream>
 
 namespace McFoxIM {
@@ -32,27 +31,28 @@ void InputTableManager::scanTables() {
     std::stringstream ss;
     ss << "TW_" << std::setw(2) << std::setfill('0') << i << ".json";
     std::string filename = ss.str();
-    std::filesystem::path filePath = std::filesystem::path(dataPath_) / filename;
+    std::filesystem::path filePath =
+        std::filesystem::path(dataPath_) / filename;
 
     if (std::filesystem::exists(filePath)) {
       // FCITX_INFO() << "Found JSON file: " << filePath;
       TableInfo info;
       info.id = filePath.stem().string();
       info.path = filePath.string();
-      
+
       std::ifstream f(filePath);
       if (f.is_open()) {
         try {
-            nlohmann::json j;
-            f >> j;
-            info.name = j.value("name", info.id);
+          nlohmann::json j;
+          f >> j;
+          info.name = j.value("name", info.id);
         } catch (...) {
-            info.name = info.id;
+          info.name = info.id;
         }
       } else {
-          info.name = info.id;
+        info.name = info.id;
       }
-      
+
       availableTables_.push_back(info);
     }
   }
@@ -70,11 +70,22 @@ bool InputTableManager::setTable(int index) {
       FCITX_INFO() << "Successfully loaded table: " << info.name;
       return true;
     } else {
-      FCITX_INFO() << "Failed to load table: " << info.name << " from " << info.path;
+      FCITX_INFO() << "Failed to load table: " << info.name << " from "
+                   << info.path;
     }
   } else {
     FCITX_INFO() << "Invalid table index: " << index;
   }
+  return false;
+}
+
+bool InputTableManager::setTable(const std::string& id) {
+  for (size_t i = 0; i < availableTables_.size(); ++i) {
+    if (availableTables_[i].id == id) {
+      return setTable(static_cast<int>(i));
+    }
+  }
+  FCITX_INFO() << "Table with id: " << id << " not found.";
   return false;
 }
 

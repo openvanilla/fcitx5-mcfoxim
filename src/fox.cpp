@@ -93,24 +93,16 @@ FoxEngine::FoxEngine(fcitx::Instance* instance) : fcitx::InputMethodEngineV2() {
   reloadConfig();
 }
 
-const fcitx::Configuration* FoxEngine::getConfig() const {
-  return &config_;
-}
-
-void FoxEngine::setConfig(const fcitx::RawConfig& config) {
-  config_.load(config, true);
-  fcitx::safeSaveAsIni(config_, "conf/fox.conf");
-  if (tableManager_) {
-    int index = static_cast<int>(config_.table.value());
-    tableManager_->setTable(index);
+void FoxEngine::activate(const fcitx::InputMethodEntry& entry,
+                         fcitx::InputContextEvent& event) {
+  std::string tableName = entry.uniqueName();
+  if (tableName.rfind("fox_", 0) == 0) {
+    tableName = tableName.substr(4);
   }
-}
 
-void FoxEngine::reloadConfig() {
-  fcitx::readAsIni(config_, "conf/fox.conf");
-  if (tableManager_) {
-    int index = static_cast<int>(config_.table.value());
-    tableManager_->setTable(index);
+  if (currentTableName_ != tableName) {
+    tableManager_->setTable(tableName);
+    currentTableName_ = tableName;
   }
 }
 

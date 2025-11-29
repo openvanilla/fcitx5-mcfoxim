@@ -44,6 +44,7 @@ class InputTableManager {
   InputTableManager(std::string dataPath);
 
   bool setTable(int index);
+  bool setTable(const std::string& id);
   const InputTable& currentTable() const;
   const std::vector<TableInfo>& availableTables() const;
 
