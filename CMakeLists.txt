@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(fcitx5-fox)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 find_package(Fcitx5Core REQUIRED)
 find_package(Fcitx5Config REQUIRED)
 find_package(Fcitx5Utils REQUIRED)
@@ -15,16 +18,19 @@ include(ECMUninstallTarget)
 include(FeatureSummary)
 
 
-# Setup some compiler option that is generally useful and compatible with Fcitx 5 (C++17)
-include("${FCITX_INSTALL_CMAKECONFIG_DIR}/Fcitx5Utils/Fcitx5CompilerSettings.cmake")
-
-find_package(nlohmann_json 3.11.3 QUIET)
-if(NOT nlohmann_json_FOUND)
-    include(FetchContent)
-    FetchContent_Declare(json
-        URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
-    )
-    FetchContent_MakeAvailable(json)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/deps/json/include/nlohmann/json.hpp")
+    add_library(nlohmann_json INTERFACE)
+    add_library(nlohmann_json::nlohmann_json ALIAS nlohmann_json)
+    target_include_directories(nlohmann_json INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/deps/json/include")
+else()
+    find_package(nlohmann_json 3.11.3 QUIET)
+    if(NOT nlohmann_json_FOUND)
+        include(FetchContent)
+        FetchContent_Declare(json
+            URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+        )
+        FetchContent_MakeAvailable(json)
+    endif()
 endif()
 
 add_subdirectory(src)
