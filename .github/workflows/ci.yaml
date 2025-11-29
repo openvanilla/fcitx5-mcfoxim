@@ -131,6 +131,8 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
           git submodule update --init --recursive
+      - name: Add Flathub
+        run: flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       - name: Build
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
