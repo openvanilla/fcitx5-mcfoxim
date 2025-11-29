@@ -123,7 +123,7 @@ jobs:
     name: "Flatpak"
     runs-on: ubuntu-latest
     container:
-      image: flathub/org.flatpak.Builder:latest
+      image: bilelmoussaoui/flatpak-github-actions:gnome-44
       options: --privileged
     steps:
       - uses: actions/checkout@v4
