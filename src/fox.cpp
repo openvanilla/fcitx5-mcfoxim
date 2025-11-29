@@ -50,10 +50,9 @@ class FoxCandidate : public fcitx::CandidateWord {
   int index_;
 };
 
-
-#if USE_LEGACY_FCITX5_API_STANDARDPATH
 // Note: The locate() method provided by fcitx::StandardPath::global() only
 // supports files but not directories. So we use scanDirectories() instead.
+#if USE_LEGACY_FCITX5_API_STANDARDPATH
 std::string findFoxDataPath() {
   std::string foundPath = "";
   std::string targetSubPath = "fox/data";
@@ -243,8 +242,14 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     candidateList->setPageSize(candidates.size());
     int index = newState.selectedCandidateIndexInCurrentPage().value_or(0);
     if (index >= 0 && index < static_cast<int>(candidates.size())) {
-      // candidateList->toCursorModifiable()->setCursorIndex(index);
-      // candidateList->toModifiable()->setCursorIndex(index);
+      // Note: The following API only appear in newer fcitx5
+      // - candidateList->toCursorModifiable()->setCursorIndex(index);
+      // - candidateList->setCursorIndex(index);
+      //
+      // Actually what `setGlobalCursorIndex` does is to set the cursor index in
+      // the global candidate list, not the current page. However, the input
+      // method already does pagination, so setting the global cursor index is
+      // equivalent to setting the cursor index in the current page.
       candidateList->setGlobalCursorIndex(index);
     }
     inputPanel.setCandidateList(std::move(candidateList));
