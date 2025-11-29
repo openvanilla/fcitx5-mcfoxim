@@ -16,7 +16,7 @@
         {
           "type": "archive",
           "url": "https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz",
-          "sha256": "0d8ef5af7f9794e326348019e581f5a45698f3f06014e7d458225a28d97c2a83"
+          "sha256": "d6c65aca6b1ed68e7a182f4757257b107ae403032760ed6ef121c9d55e81757d"
         }
       ]
     },
