@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: fcitx5-fox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-29 14:00+0800\n"
+"PO-Revision-Date: 2025-11-29 14:00+0800\n"
+"Last-Translator: Weizhong Yang <zonble@gmail.com>\n"
+"Language-Team: none\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Table"
+msgstr "輸入法表格"
+
+msgid "南勢阿美語"
+msgstr "南勢阿美語"
+
+msgid "秀姑巒阿美語"
+msgstr "秀姑巒阿美語"
+
+msgid "海岸阿美語"
+msgstr "海岸阿美語"
+
+msgid "馬蘭阿美語"
+msgstr "馬蘭阿美語"
+
+msgid "恆春阿美語"
+msgstr "恆春阿美語"
+
+msgid "賽考利克泰雅語"
+msgstr "賽考利克泰雅語"
+
+msgid "澤敖利泰雅語"
+msgstr "澤敖利泰雅語"
+
+msgid "汶水泰雅語"
+msgstr "汶水泰雅語"
+
+msgid "萬大泰雅語"
+msgstr "萬大泰雅語"
+
+msgid "四季泰雅語"
+msgstr "四季泰雅語"
+
+msgid "宜蘭澤敖利泰雅語"
+msgstr "宜蘭澤敖利泰雅語"
+
+msgid "賽夏語"
+msgstr "賽夏語"
+
+msgid "邵語"
+msgstr "邵語"
+
+msgid "都達賽德克語"
+msgstr "都達賽德克語"
+
+msgid "德固達雅賽德克語"
+msgstr "德固達雅賽德克語"
+
+msgid "德鹿谷賽德克語"
+msgstr "德鹿谷賽德克語"
+
+msgid "卓群布農語"
+msgstr "卓群布農語"
+
+msgid "卡群布農語"
+msgstr "卡群布農語"
+
+msgid "丹群布農語"
+msgstr "丹群布農語"
+
+msgid "巒群布農語"
+msgstr "巒群布農語"
+
+msgid "郡群布農語"
+msgstr "郡群布農語"
+
+msgid "東排灣語"
+msgstr "東排灣語"
+
+msgid "北排灣語"
+msgstr "北排灣語"
+
+msgid "中排灣語"
+msgstr "中排灣語"
+
+msgid "南排灣語"
+msgstr "南排灣語"
+
+msgid "東魯凱語"
+msgstr "東魯凱語"
+
+msgid "霧台魯凱語"
+msgstr "霧台魯凱語"
+
+msgid "大武魯凱語"
+msgstr "大武魯凱語"
+
+msgid "多納魯凱語"
+msgstr "多納魯凱語"
+
+msgid "茂林魯凱語"
+msgstr "茂林魯凱語"
+
+msgid "萬山魯凱語"
+msgstr "萬山魯凱語"
+
+msgid "太魯閣語"
+msgstr "太魯閣語"
+
+msgid "噶瑪蘭語"
+msgstr "噶瑪蘭語"
+
+msgid "鄒語"
+msgstr "鄒語"
+
+msgid "卡那卡那富語"
+msgstr "卡那卡那富語"
+
+msgid "拉阿魯哇語"
+msgstr "拉阿魯哇語"
+
+msgid "南王卑南語"
+msgstr "南王卑南語"
+
+msgid "知本卑南語"
+msgstr "知本卑南語"
+
+msgid "西群卑南語"
+msgstr "西群卑南語"
+
+msgid "建和卑南語"
+msgstr "建和卑南語"
+
+msgid "雅美語"
+msgstr "雅美語"
+
+msgid "撒奇萊雅語"
+msgstr "撒奇萊雅語"

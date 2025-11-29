@@ -4,6 +4,7 @@ project(fcitx5-fox)
 find_package(Fcitx5Core REQUIRED)
 find_package(Fcitx5Config REQUIRED)
 find_package(Fcitx5Utils REQUIRED)
+find_package(Gettext REQUIRED)
 find_package(ECM REQUIRED 1.0.0)
 
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -25,6 +26,7 @@ FetchContent_MakeAvailable(json)
 
 add_subdirectory(src)
 add_subdirectory(data)
+add_subdirectory(po)
 
 enable_testing()
 add_subdirectory(tests)
