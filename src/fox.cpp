@@ -243,8 +243,9 @@ void FoxEngine::updateUI(const InputState::InputtingState& newState,
     candidateList->setPageSize(candidates.size());
     int index = newState.selectedCandidateIndexInCurrentPage().value_or(0);
     if (index >= 0 && index < static_cast<int>(candidates.size())) {
-      // candidateList->setCursorIndex(index);
-      candidateList->toCursorModifiable()->setCursorIndex(index);
+      // candidateList->toCursorModifiable()->setCursorIndex(index);
+      // candidateList->toModifiable()->setCursorIndex(index);
+      candidateList->setGlobalCursorIndex(index);
     }
     inputPanel.setCandidateList(std::move(candidateList));
   }
