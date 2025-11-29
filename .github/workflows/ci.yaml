@@ -118,3 +118,20 @@ jobs:
         run: |
           cd build
           ctest --output-on-failure
+
+  flatpak:
+    name: "Flatpak"
+    runs-on: ubuntu-latest
+    container:
+      image: flathub/org.flatpak.Builder:latest
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+      - name: Build
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: org.fcitx.Fcitx5.Addon.McFoxIM.flatpak
+          manifest-path: org.fcitx.Fcitx5.Addon.McFoxIM.json
+          cache-key: flatpak-builder-${{ github.sha }}

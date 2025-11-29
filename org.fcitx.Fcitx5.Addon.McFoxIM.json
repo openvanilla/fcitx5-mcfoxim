@@ -1,0 +1,21 @@
+{
+  "app-id": "org.fcitx.Fcitx5.Addon.McFoxIM",
+  "runtime": "org.fcitx.Fcitx5",
+  "runtime-version": "5.1",
+  "sdk": "org.kde.Sdk//6.6",
+  "build-extension": true,
+  "separate-locales": false,
+  "modules": [
+    {
+      "name": "fcitx5-mcfoxim",
+      "buildsystem": "cmake-ninja",
+      "config-opts": ["-DCMAKE_BUILD_TYPE=Release"],
+      "sources": [
+        {
+          "type": "dir",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}

@@ -30,4 +30,6 @@ add_subdirectory(data)
 enable_testing()
 add_subdirectory(tests)
 
+install(FILES org.fcitx.Fcitx5.Addon.McFoxIM.metainfo.xml DESTINATION "${CMAKE_INSTALL_DATADIR}/metainfo")
+
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

@@ -6,4 +6,3 @@ foreach(size 16 22 24 32 64)
         PATTERN .* EXCLUDE
         PATTERN *~ EXCLUDE)
 endforeach(size 16 22 24 32 64)
-
