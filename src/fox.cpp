@@ -50,6 +50,8 @@ class FoxCandidate : public fcitx::CandidateWord {
   int index_;
 };
 
+
+#if USE_LEGACY_FCITX5_API_STANDARDPATH
 // Note: The locate() method provided by fcitx::StandardPath::global() only
 // supports files but not directories. So we use scanDirectories() instead.
 std::string findFoxDataPath() {
@@ -70,6 +72,13 @@ std::string findFoxDataPath() {
 
   return foundPath;
 }
+#else
+std::string findFoxDataPath() {
+  std::string targetSubPath = "fox/data";
+  return fcitx::StandardPaths::global().locateDir(
+      fcitx::StandardPaths::Type::PkgData, targetSubPath);
+}
+#endif
 
 FoxEngine::FoxEngine(fcitx::Instance* /* Unused */)
     : fcitx::InputMethodEngineV2() {
