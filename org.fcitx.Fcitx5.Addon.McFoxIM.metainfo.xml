@@ -10,6 +10,8 @@
   <url type="bugtracker">https://github.com/openvanilla/fcitx5-mcfoxim/issues</url>
   <url type="vcs-browser">https://github.com/openvanilla/fcitx5-mcfoxim</url>
   <project_group>Fcitx</project_group>
+  <developer_name>The McFoxIM Authors</developer_name>
+  <content_rating type="oars-1.1"/>
   <releases>
     <release version="0.1.0" date="2025-11-29"/>
   </releases>
