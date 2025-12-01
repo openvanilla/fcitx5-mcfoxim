@@ -2,12 +2,13 @@
 <component type="addon">
   <id>org.fcitx.Fcitx5.Addon.McFoxIM</id>
   <extends>org.fcitx.Fcitx5</extends>
-  <metadata_license>CC0-1.0</metadata_license>
+  <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
   <name>McFoxIM</name>
   <summary>Input methods for indigenous languages of Taiwan</summary>
   <url type="homepage">https://github.com/openvanilla/fcitx5-mcfoxim</url>
   <url type="bugtracker">https://github.com/openvanilla/fcitx5-mcfoxim/issues</url>
+  <url type="vcs-browser">https://github.com/openvanilla/fcitx5-mcfoxim</url>
   <project_group>Fcitx</project_group>
   <releases>
     <release version="0.1.0" date="2025-11-29"/>
