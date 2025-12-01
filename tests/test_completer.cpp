@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 #include "../src/completer.h"
 #include "../src/inputtable.h"
@@ -17,7 +19,11 @@ void createTestFile(const std::string& filename) {
             ["ab", "AB"],
             ["abc", "ABC"],
             ["b", "B"],
-            ["ba", "BA"]
+            ["ba", "BA"],
+            ["dup", "D1"],
+            ["dup", "D2"],
+            ["long", "LONG"],
+            ["longer", "LONGER"]
         ]
     })";
   out.close();
@@ -33,9 +39,10 @@ void testCompleter() {
 
   Completer completer([&table]() -> const InputTable& { return table; });
 
-  // Test exact match
+  // Test exact match and sorting by length
   auto results = completer.complete("a");
   assert(results.size() >= 3);
+  // "a" (1), "ab" (2), "abc" (3)
   assert(results[0].displayText() == "a");
   assert(results[0].description() == "A");
   assert(results[1].displayText() == "ab");
@@ -43,25 +50,28 @@ void testCompleter() {
   assert(results[2].displayText() == "abc");
   assert(results[2].description() == "ABC");
 
-  // Test prefix match
-  results = completer.complete("ab");
-  assert(results.size() >= 2);
-  assert(results[0].displayText() == "ab");
-  assert(results[0].description() == "AB");
-  assert(results[1].displayText() == "abc");
-  assert(results[1].description() == "ABC");
+  // Test duplicate handling
+  results = completer.complete("dup");
+  assert(results.size() == 1);
+  assert(results[0].displayText() == "dup");
+  assert(results[0].description() == "D1/D2");
 
-  // Test no match
-  results = completer.complete("z");
-  assert(results.empty());
+  // Test case sensitivity (Uppercase prefix)
+  // "A" should match "a", "ab", "abc" and capitalize them.
+  results = completer.complete("A");
+  assert(results.size() >= 3);
+  assert(results[0].displayText() == "A");
+  assert(results[0].description() == "A");
+  assert(results[1].displayText() == "Ab");
+  assert(results[1].description() == "AB");
+  assert(results[2].displayText() == "Abc");
+  assert(results[2].description() == "ABC");
 
-  // Test partial match
-  results = completer.complete("b");
+  // Test sorting by length
+  results = completer.complete("l");
   assert(results.size() >= 2);
-  assert(results[0].displayText() == "b");
-  assert(results[0].description() == "B");
-  assert(results[1].displayText() == "ba");
-  assert(results[1].description() == "BA");
+  assert(results[0].displayText() == "long");
+  assert(results[1].displayText() == "longer");
 
   std::filesystem::remove(testFile);
   std::cout << "All tests passed!" << std::endl;

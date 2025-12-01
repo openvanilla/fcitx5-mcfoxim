@@ -33,7 +33,10 @@ class Candidate {
   Candidate(std::string displayText, std::string description);
 
   const std::string& displayText() const { return displayText_; }
+
   const std::string& description() const { return description_; }
+
+  void appendDescription(const std::string& desc);
 
  private:
   std::string displayText_;

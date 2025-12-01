@@ -29,13 +29,12 @@ namespace McFoxIM {
 
 Completer::Completer(TableProvider provider) : provider_(std::move(provider)) {}
 
-std::vector<Candidate> Completer::complete(const std::string& prefix) {
-  const auto& table = provider_();
-  const auto& data = table.entries();
-
-  if (data.empty()) {
+std::vector<Candidate> Completer::complete_(const std::string& prefix) {
+  if (prefix.empty()) {
     return {};
   }
+  const auto& table = provider_();
+  const auto& data = table.entries();
 
   int left = 0;
   int right = static_cast<int>(data.size()) - 1;
@@ -47,16 +46,7 @@ std::vector<Candidate> Completer::complete(const std::string& prefix) {
     const auto& key = data[mid].phrase;
 
     if (key < prefix) {
-      bool startsWith = key.rfind(prefix, 0) == 0;
-
-      if (key < prefix && !startsWith) {
-        left = mid + 1;
-      } else if (startsWith) {
-        firstMatch = mid;
-        right = mid - 1;
-      } else {
-        right = mid - 1;
-      }
+      left = mid + 1;
     } else {
       bool startsWith = key.rfind(prefix, 0) == 0;
       if (startsWith) {
@@ -68,27 +58,6 @@ std::vector<Candidate> Completer::complete(const std::string& prefix) {
     }
   }
 
-  left = 0;
-  right = static_cast<int>(data.size()) - 1;
-  firstMatch = -1;
-
-  while (left <= right) {
-    int mid = left + (right - left) / 2;
-    const auto& key = data[mid].phrase;
-
-    bool startsWith = key.size() >= prefix.size() &&
-                      key.compare(0, prefix.size(), prefix) == 0;
-
-    if (key < prefix && !startsWith) {
-      left = mid + 1;
-    } else if (startsWith) {
-      firstMatch = mid;
-      right = mid - 1;
-    } else {
-      right = mid - 1;
-    }
-  }
-
   if (firstMatch == -1) {
     return {};
   }
@@ -96,16 +65,68 @@ std::vector<Candidate> Completer::complete(const std::string& prefix) {
   std::vector<Candidate> results;
   for (size_t i = firstMatch; i < data.size(); ++i) {
     const auto& key = data[i].phrase;
-    bool startsWith = key.size() >= prefix.size() &&
-                      key.compare(0, prefix.size(), prefix) == 0;
-    if (startsWith) {
-      results.emplace_back(data[i].phrase, data[i].description);
-    } else {
+    if (key.rfind(prefix, 0) != 0) {
       break;
     }
+
+    // Check duplicates
+    bool duplicateFound = false;
+    std::string keyLower = key;
+    std::transform(keyLower.begin(), keyLower.end(), keyLower.begin(),
+                   ::tolower);
+
+    for (auto& result : results) {
+      std::string resultLower = result.displayText();
+      std::transform(resultLower.begin(), resultLower.end(),
+                     resultLower.begin(), ::tolower);
+
+      if (resultLower == keyLower) {
+        result.appendDescription(data[i].description);
+        duplicateFound = true;
+        break;
+      }
+    }
+
+    if (duplicateFound) {
+      continue;
+    }
+
+    results.emplace_back(key, data[i].description);
   }
 
   return results;
+}
+
+std::vector<Candidate> Completer::complete(const std::string& prefix) {
+  if (prefix.empty()) {
+    return {};
+  }
+
+  std::vector<Candidate> result;
+  if (std::isupper(static_cast<unsigned char>(prefix[0]))) {
+    auto original = complete_(prefix);
+    std::string lowerPrefix = prefix;
+    std::transform(lowerPrefix.begin(), lowerPrefix.end(), lowerPrefix.begin(),
+                   ::tolower);
+    auto lowered = complete_(lowerPrefix);
+
+    result = std::move(original);
+    for (const auto& c : lowered) {
+      std::string text = c.displayText();
+      if (!text.empty()) {
+        text[0] = std::toupper(static_cast<unsigned char>(text[0]));
+      }
+      result.emplace_back(text, c.description());
+    }
+  } else {
+    result = complete_(prefix);
+  }
+
+  std::sort(result.begin(), result.end(),
+            [](const Candidate& a, const Candidate& b) {
+              return a.displayText().length() < b.displayText().length();
+            });
+  return result;
 }
 
 }  // namespace McFoxIM

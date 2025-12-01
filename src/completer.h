@@ -49,6 +49,8 @@ class Completer {
 
  private:
   TableProvider provider_;
+
+  std::vector<Candidate> complete_(const std::string& prefix);
 };
 
 }  // namespace McFoxIM

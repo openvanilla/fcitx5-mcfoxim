@@ -29,4 +29,11 @@ Candidate::Candidate(std::string displayText, std::string description)
     : displayText_(std::move(displayText)),
       description_(std::move(description)) {}
 
+void Candidate::appendDescription(const std::string& desc) {
+  if (!description_.empty()) {
+    description_ += "/";
+  }
+  description_ += desc;
+}
+
 }  // namespace McFoxIM
