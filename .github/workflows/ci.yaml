@@ -86,7 +86,7 @@ jobs:
         run: |
           dnf -y install gcc g++
             dnf -y install fcitx5 fcitx5-configtool fcitx5-devel \
-               cmake extra-cmake-modules \
+               cmake extra-cmake-modules gettext fmt-devel \
                nlohmann-json-devel
       - name: Build
         run: |
