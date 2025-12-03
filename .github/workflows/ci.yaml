@@ -77,7 +77,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["fedora:42", "fedora:41", "fedora:40", "fedora:39"]
+        os: ["fedora:42", "fedora:41", "fedora:40"]
     runs-on: ubuntu-latest
     container: ${{ matrix.os }}
     steps:
