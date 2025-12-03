@@ -10,7 +10,7 @@
 
 ```bash
 sudo apt install \
-    pkg-config fcitx5 libfcitx5core-dev libfcitx5config-dev libfcitx5utils-dev fcitx5-modules-dev \
+    pkg-config fcitx5 libfcitx5core-dev libfcitx5config-dev libfcitx5utils-dev fcitx5-modules-dev  nlohmann-json3-dev\
     cmake extra-cmake-modules
 ```
 
