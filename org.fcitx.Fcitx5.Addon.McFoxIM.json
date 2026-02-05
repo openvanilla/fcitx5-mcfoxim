@@ -5,14 +5,23 @@
   "sdk": "org.kde.Sdk//6.9",
   "build-extension": true,
   "separate-locales": false,
+  "cleanup": [
+    "/bin",
+    "/include",
+    "/lib/pkgconfig",
+    "/share/pkgconfig",
+    "*.la",
+    "/lib/cmake",
+    "/share/cmake"
+  ],
+  "build-options": {
+    "prefix": "/app/addons/McFoxIM",
+    "prepend-pkg-config-path": "/app/addons/McFoxIM/lib/pkgconfig:/app/addons/McFoxIM/share/pkgconfig"
+  },
   "modules": [
     {
       "name": "fcitx5-mcfoxim",
       "buildsystem": "cmake-ninja",
-      "config-opts": [
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DCMAKE_INSTALL_PREFIX=/app/addons"
-      ],
       "sources": [
         {
           "type": "dir",
