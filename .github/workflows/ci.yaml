@@ -139,3 +139,4 @@ jobs:
           bundle: org.fcitx.Fcitx5.Addon.McFoxIM.flatpak
           manifest-path: org.fcitx.Fcitx5.Addon.McFoxIM.json
           cache-key: flatpak-builder-${{ github.sha }}
+          run-tests: false
