@@ -2,7 +2,7 @@
   "app-id": "org.fcitx.Fcitx5.Addon.McFoxIM",
   "runtime": "org.fcitx.Fcitx5",
   "runtime-version": "stable",
-  "sdk": "org.kde.Sdk//6.9",
+  "sdk": "org.kde.Sdk//6.10",
   "build-extension": true,
   "separate-locales": false,
   "cleanup": [
